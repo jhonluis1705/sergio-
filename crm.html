@@ -36,7 +36,19 @@ th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left;font-size:14px}
 <h3>+ Novo Orçamento</h3>
 <input id="nome" placeholder="Nome do Cliente">
 <input id="fone" placeholder="WhatsApp (71) 9...">
-<input id="bairro" placeholder="Bairro - ex: Gleba B, Camaçari">
+<input id="bairro" list="bairros" placeholder="Bairro - Camaçari Sede" value="Camaçari - Sede">
+<datalist id="bairros">
+<option>Gleba A - Camaçari Sede">
+<option>Gleba B - Camaçari Sede">
+<option>Gleba C - Camaçari Sede">
+<option>Gleba H - Camaçari Sede">
+<option>Phoc - Camaçari">
+<option>Burissatuba - Camaçari">
+<option>Gravatá - Camaçari">
+<option>Verdes Horizontes - Camaçari">
+<option>Monte Gordo - Camaçari">
+<option>Dias d'Ávila">
+</datalist>
 <select id="servico">
 <option>Pintura Residencial</option>
 <option>Elétrica</option>
