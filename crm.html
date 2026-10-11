@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM - Sérgio Luis</title>
+<style>
+body{font-family:Arial;background:#f0f2f5;margin:0;padding:15px}
+header{background:#111;color:#fff;padding:15px;border-radius:10px;text-align:center}
+.card{background:#fff;padding:15px;border-radius:10px;margin-top:15px;box-shadow:0 2px 5px #0001}
+input,select,button{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:1px solid #ccc;box-sizing:border-box}
+button{background:#25D366;color:#fff;font-weight:bold;border:0;cursor:pointer}
+button.sec{background:#ff9900}
+.totais{display:flex;gap:10px}
+.total{flex:1;background:#fff;padding:10px;border-radius:8px;text-align:center;font-weight:bold}
+table{width:100%;margin-top:10px;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left;font-size:14px}
+.status-Novo{color:#ff9900;font-weight:bold}
+.status-Orçado{color:#0066ff;font-weight:bold}
+.status-Fechado{color:#25D366;font-weight:bold}
+</style>
+</head>
+<body>
+<header>
+<h2>CRM SÉRGIO LUIS</h2>
+<p>Pintura e Elétrica - Camaçari</p>
+<a href="https://jhonluis1705.github.io/sergio-/" style="color:#ff9900">← Voltar pro Site</a>
+</header>
+
+<div class="totais">
+<div class="total">Clientes: <span id="qtd">0</span></div>
+<div class="total">Fechado: R$ <span id="total">0</span></div>
+</div>
+
+<div class="card">
+<h3>+ Novo Orçamento</h3>
+<input id="nome" placeholder="Nome do Cliente">
+<input id="fone" placeholder="WhatsApp (71) 9...">
+<input id="bairro" placeholder="Bairro - ex: Gleba B, Camaçari">
+<select id="servico">
+<option>Pintura Residencial</option>
+<option>Elétrica</option>
+<option>Hidráulica</option>
+<option>Manutenção Predial</option>
+<option>Pequeno Reparo</option>
+</select>
+<input id="valor" type="number" placeholder="Valor R$">
+<select id="status">
+<option>Novo</option>
+<option>Visitado</option>
+<option>Orçado</option>
+<option>Fechado</option>
+<option>Pago</option>
+</select>
+<button onclick="salvar()">SALVAR CLIENTE</button>
+</div>
+
+<div class="card">
+<input id="busca" placeholder="🔍 Buscar por nome ou bairro..." oninput="listar()">
+<table>
+<thead><tr><th>Cliente</th><th>Bairro/Serviço</th><th>Status</th><th>Ação</th></tr></thead>
+<tbody id="lista"></tbody>
+</table>
+</div>
+
+<script>
+let clientes = JSON.parse(localStorage.getItem('crm_sergio')||'[]');
+function salvar(){
+let c={id:Date.now(),nome:nome.value,fone:fone.value,bairro:bairro.value,servico:servico.value,valor:Number(valor.value||0),status:status.value};
+if(!c.nome||!c.fone){alert('Preencha nome e telefone');return}
+clientes.unshift(c); localStorage.setItem('crm_sergio',JSON.stringify(clientes));
+nome.value=fone.value=bairro.value=valor.value=''; listar();
+}
+function listar(){
+let b=busca.value.toLowerCase();
+let fil=clientes.filter(x=>(x.nome+x.bairro).toLowerCase().includes(b));
+lista.innerHTML=''; let tot=0, q=0;
+fil.forEach(c=>{
+if(c.status=='Fechado'||c.status=='Pago') tot+=c.valor; q++;
+lista.innerHTML+=`<tr>
+<td><b>${c.nome}</b><br><small>${c.fone}</small></td>
+<td>${c.bairro}<br><small>${c.servico} - R$${c.valor}</small></td>
+<td><span class="status-${c.status}">${c.status}</span><br><select onchange="mudaStatus(${c.id},this.value)"><option>${c.status}</option><option>Novo</option><option>Visitado</option><option>Orçado</option><option>Fechado</option><option>Pago</option></select></td>
+<td><a href="https://wa.me/55${c.fone.replace(/\D/g,'')}?text=Olá ${c.nome}, aqui é o Sérgio da pintura" target="_blank"><button class="sec">Zap</button></a><button onclick="del(${c.id})" style="background:#ccc;margin-top:5px">X</button></td>
+</tr>`;
+});
+qtd.innerText=clientes.length; total.innerText=tot.toFixed(2);
+}
+function mudaStatus(id,v){let c=clientes.find(x=>x.id==id); c.status=v; localStorage.setItem('crm_sergio',JSON.stringify(clientes)); listar()}
+function del(id){if(confirm('Apagar?')){clientes=clientes.filter(x=>x.id!=id); localStorage.setItem('crm_sergio',JSON.stringify(clientes)); listar()}}
+listar();
+</script>
+</body>
+</html>
